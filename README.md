@@ -108,10 +108,11 @@ Status response packet
 ───────────────────  ─────────── ─────────── ───────────  ───────────  ──────  ──────  ────── ────── ───────────
                     |   AC      |           |    DC     |             |      |       | BATT. |  ?   | DELIMITER
        HEADER       | VOLTAGE   |  POWER    |  VOLTAGE  | TEMPERATURE |      | FAULT | GAUGE |      |  
-                    | (231V)    | (3427W)   |  (25.4V)  |   (27°C)    |      |       |       |      |         
+                    | (231V)    | (3437W)   |  (25.4V)  |   (27°C)    |      |       |       |      |         
 ```
 
 FAULT: 0x04 if overload
+
 BATTERY GAUGE: to show bars in the battery icon (depending on DC voltage)
 
 ## Using the integration with the external display
