@@ -89,11 +89,30 @@ In the 24V inverter variant the dry contact is pulled up at 24V. Probably the pu
 ┌──────────┐                     ┌─────────┐                         ┌─────────┐ 
 │          │ Dry contact <---> C │         │ B <- 10 kOhm ----> GPIO │         │
 │ INVERTER │                     │   NPN   │                |        │  ESP32  │
-│          │                     │         │             10 kOhm     │         │                
+│          │                     │         │             10 kOhm     │         │ 
 │          │                     │         │                |        │         │ 
 │          │ GND <-----------> E │         │ E <---------------> GND │         │ 
 └──────────┘                     └─────────┘                         └─────────┘
 ```
+
+## Docs
+
+Status request packet
+
+```0xAE 0x01 0x01 0x03 0x05 0xEE```
+
+Status response packet
+
+```
+0xAE 0x01 0x12 0x83 | 0x02 0x31 | 0x34 0x37 | 0x02 0x54 |  0x00 0x27  | 0x00 |  0x42 |  0x07 | 0x50 | 0xEE
+───────────────────  ─────────── ─────────── ───────────  ───────────  ──────  ──────  ────── ────── ───────────
+                    |   AC      |           |    DC     |             |      |       | BATT. |  ?   | DELIMITER
+       HEADER       | VOLTAGE   |  POWER    |  VOLTAGE  | TEMPERATURE |      | FAULT | GAUGE |      |  
+                    | (231V)    | (3427W)   |  (25.4V)  |   (27°C)    |      |       |       |      |         
+```
+
+FAULT: 0x04 if overload
+BATTERY GAUGE: to show bars in the battery icon (depending on DC voltage)
 
 ## Using the integration with the external display
 
