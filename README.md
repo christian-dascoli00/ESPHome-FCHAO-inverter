@@ -12,7 +12,7 @@ Exposed components:
 - AC Voltage
 - DC Voltage
 - Temperature
-- Overload protection triggered (to do)
+- Overload protection triggered
 
 Choose your GPIO pins and write them in the yaml. ```inverter_flow_pin``` is needed if your MAX485 module doesn't automatically manage TX/RX (i.e. it exposes DE/RE pins).
 

@@ -21,6 +21,9 @@ ota:
 
 api:
 
+web_server:
+  port: 80
+
 logger:
   level: INFO
 
@@ -54,7 +57,7 @@ output:
     id: inverter_flow
 
 interval:
-  - interval: 500ms # Up to you
+  - interval: 1000ms # Up to you
     then:
             - lambda: |- # Request
                 uint8_t req[] = {0xAE, 0x01, 0x01, 0x03, 0x05, 0xEE};
@@ -99,6 +102,10 @@ interval:
                     id(inverter_power).publish_state(power);
                     id(battery_voltage).publish_state(volt_batt / 10.0);
                     id(inverter_temperature).publish_state(temp);
+
+                    uint8_t status_byte = buf[i+13];
+                    bool overload = (status_byte == 0x04);
+                    id(inverter_overload).publish_state(overload);
 
                     last_valid_ms = millis();
                     consumed = i + 17;
@@ -147,3 +154,8 @@ sensor:
     unit_of_measurement: "°C"
     accuracy_decimals: 0
     update_interval: never
+
+binary_sensor:
+  - platform: template
+    name: "Overload"
+    id: inverter_overload
