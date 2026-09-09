@@ -33,7 +33,7 @@ CONFIG_SCHEMA = cv.All(
             cv.Optional(CONF_SEND_REQUEST, default=True): cv.boolean,
         }
     )
-    .extend(cv.polling_component_schema("5s"))
+    .extend(cv.polling_component_schema("1s"))
     .extend(uart.UART_DEVICE_SCHEMA),
 )
 
