@@ -2,6 +2,8 @@
 
 ESPHome custom component to monitor and switch ON//OFF a FCHAO inverter via RS485/RJ-45 port.
 
+This component can either replace the native external display or operate in parallel with it on the same RS485 bus. Refer to the `send_request` configuration setting for additional information.
+
 The inverter RS485 port consist of a communication part (RS485) and a pulled up dry contact to switch ON/OFF the inverter.
 
 A MAX485 module and a level shifter are required.
@@ -66,7 +68,7 @@ See [`inverter.yaml`](./inverter.yaml) for a complete configuration example.
 - `flow_control_pin` (Optional, Pin): GPIO pin connected to the DE/RE pins of the MAX485 module (tied together), used to switch the transceiver between transmit and receive mode. Not needed if your MAX485 module handles flow control automatically (no DE/RE pins exposed).
 - `rx_timeout` (Optional, Time): Maximum time allowed between two consecutive bytes of an incoming frame before the partially received buffer is discarded. Defaults to `200ms`.
 - `data_timeout` (Optional, Time): Maximum time allowed without receiving a valid, complete frame before all sensors are published as `NaN`. Defaults to `5s`.
-- `send_request` (Optional, boolean): Whether to actively send the status request packet to the inverter on every `update_interval`. Set to `false` to passively listen to the bus only (e.g. when sharing the bus with the inverter's native external display, which already sends the request). Defaults to `true`. If set to `false`, `update_interval` has no effect.
+- `send_request` (Optional, boolean): Whether to actively send the status request packet to the inverter on every `update_interval`. Set to `false` to passively listen to the bus only (e.g. when sharing the bus with the inverter's native external display, which already sends the request). Set to `true` if this integration is used as replacement for the native external display. If set to `false`, `update_interval` has no effect. Defaults to `true`.
 
 `sensor:`
 - `platform`: `fchao_inverter`
