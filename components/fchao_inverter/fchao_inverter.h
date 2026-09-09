@@ -15,6 +15,8 @@ class FchaoInverterComponent : public PollingComponent, public uart::UARTDevice 
   void loop() override;
   void update() override;
   void dump_config() override;
+  
+  void publish_nan() { this->publish_nan_(); }
 
   void set_flow_control_pin(GPIOPin *pin) { this->flow_control_pin_ = pin; }
   void set_rx_timeout(uint32_t rx_timeout_ms) { this->rx_timeout_ms_ = rx_timeout_ms; }
