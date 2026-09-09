@@ -16,6 +16,7 @@ FchaoInverterComponent = fchao_inverter_ns.class_(
 
 CONF_RX_TIMEOUT = "rx_timeout"
 CONF_DATA_TIMEOUT = "data_timeout"
+CONF_SEND_REQUEST = "send_request"
 
 CONFIG_SCHEMA = cv.All(
     cv.require_esphome_version(2025, 7, 0),
@@ -29,6 +30,7 @@ CONFIG_SCHEMA = cv.All(
             cv.Optional(
                 CONF_DATA_TIMEOUT, default="5s"
             ): cv.positive_time_period_milliseconds,
+            cv.Optional(CONF_SEND_REQUEST, default=True): cv.boolean,
         }
     )
     .extend(cv.polling_component_schema("5s"))
@@ -43,6 +45,7 @@ async def to_code(config):
 
     cg.add(var.set_rx_timeout(config[CONF_RX_TIMEOUT]))
     cg.add(var.set_data_timeout(config[CONF_DATA_TIMEOUT]))
+    cg.add(var.set_send_request(config[CONF_SEND_REQUEST]))
 
     if CONF_FLOW_CONTROL_PIN in config:
         pin = await gpio_pin_expression(config[CONF_FLOW_CONTROL_PIN])

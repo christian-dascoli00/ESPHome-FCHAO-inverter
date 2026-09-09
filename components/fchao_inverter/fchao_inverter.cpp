@@ -29,6 +29,7 @@ void FchaoInverterComponent::dump_config() {
   LOG_PIN("  Flow Control Pin: ", this->flow_control_pin_);
   ESP_LOGCONFIG(TAG, "  RX Timeout: %u ms", this->rx_timeout_ms_);
   ESP_LOGCONFIG(TAG, "  Data Timeout: %u ms", this->data_timeout_ms_);
+  ESP_LOGCONFIG(TAG, "  Send Request: %s", YESNO(this->send_request_enabled_));
   LOG_SENSOR("  ", "Voltage", this->voltage_sensor_);
   LOG_SENSOR("  ", "Power", this->power_sensor_);
   LOG_SENSOR("  ", "Battery Voltage", this->battery_voltage_sensor_);
@@ -36,7 +37,9 @@ void FchaoInverterComponent::dump_config() {
 }
 
 void FchaoInverterComponent::update() {
-  this->send_request_();
+  if (this->send_request_enabled_) {
+    this->send_request_();
+  }
 }
 
 void FchaoInverterComponent::send_request_() {

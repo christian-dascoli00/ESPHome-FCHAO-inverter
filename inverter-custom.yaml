@@ -45,6 +45,7 @@ fchao_inverter:
     flow_control_pin: GPIO27
     #rx_timeout: 200ms
     #data_timeout: 5s
+    #send_request: true
 
 sensor:
   - platform: fchao_inverter

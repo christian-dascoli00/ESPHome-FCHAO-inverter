@@ -19,6 +19,7 @@ class FchaoInverterComponent : public PollingComponent, public uart::UARTDevice 
   void set_flow_control_pin(GPIOPin *pin) { this->flow_control_pin_ = pin; }
   void set_rx_timeout(uint32_t rx_timeout_ms) { this->rx_timeout_ms_ = rx_timeout_ms; }
   void set_data_timeout(uint32_t data_timeout_ms) { this->data_timeout_ms_ = data_timeout_ms; }
+  void set_send_request(bool send_request) { this->send_request_enabled_ = send_request; }
 
   void set_voltage_sensor(sensor::Sensor *s) { this->voltage_sensor_ = s; }
   void set_power_sensor(sensor::Sensor *s) { this->power_sensor_ = s; }
@@ -39,6 +40,7 @@ class FchaoInverterComponent : public PollingComponent, public uart::UARTDevice 
   GPIOPin *flow_control_pin_{nullptr};
   uint32_t rx_timeout_ms_{200};
   uint32_t data_timeout_ms_{5000};
+  bool send_request_enabled_{true};
 
   sensor::Sensor *voltage_sensor_{nullptr};
   sensor::Sensor *power_sensor_{nullptr};
@@ -47,7 +49,7 @@ class FchaoInverterComponent : public PollingComponent, public uart::UARTDevice 
 
   std::array<uint8_t, FRAME_LEN> rx_buffer_{};
   size_t rx_size_{0};
-  
+
   uint32_t last_byte_ms_{0};
   uint32_t last_valid_ms_{0};
   bool timed_out_{false};
