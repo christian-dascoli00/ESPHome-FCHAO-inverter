@@ -1,0 +1,69 @@
+external_components:
+  - source: components
+
+# Configuration
+
+esphome:
+  name: inverter
+
+ota:
+  - platform: esphome
+    password: ""
+
+wifi:
+  networks:
+    - ssid: !secret camping_wifi_ssid
+      password: !secret camping_wifi_password
+    - ssid: !secret home_wifi_ssid
+      password: !secret home_wifi_password
+  ap:
+    ssid: !secret ap_ssid
+    password: !secret ap_password
+    ap_timeout: 15s
+
+web_server:
+  port: 80
+  local: true
+  version: 3
+
+esp32:
+  board: esp32doit-devkit-v1
+  framework:
+    type: esp-idf
+
+uart:
+  #id: uart_inverter
+  tx_pin: GPIO25
+  rx_pin: GPIO26
+  baud_rate: 9600   
+
+
+fchao_inverter:
+  #- id: inverter1
+    #uart_id: uart_inverter
+    update_interval: 500ms
+    flow_control_pin: GPIO27
+    #rx_timeout: 200ms
+    #data_timeout: 5s
+
+sensor:
+  - platform: fchao_inverter
+    #fchao_inverter_id: inverter1
+    ac_voltage:
+      name: "Inverter Voltage"
+      id: inverter_voltage
+    power:
+      name: "Inverter Power"
+      id: inverter_power
+    battery_voltage:
+      name: "Battery Voltage"
+      id: battery_voltage
+    temperature:
+      name: "Inverter Temperature"
+      id: inverter_temperature
+
+switch:
+  - platform: gpio
+    pin: GPIO13
+    name: "Inverter"
+    id: inverter_switch
