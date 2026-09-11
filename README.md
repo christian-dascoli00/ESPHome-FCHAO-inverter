@@ -4,18 +4,11 @@ ESPHome integration to monitor and switch ON//OFF a FCHAO inverter via RS485/RJ-
 
 This component can either replace the native external display or operate in parallel with it on the same RS485 bus. Refer to the `send_request` configuration setting for additional information.
 
-The inverter RS485 port consists of a communication part (RS485) and a pulled up dry contact to switch ON/OFF the inverter.
+Refer to the [Wiring](#wiring) section.
 
-A MAX485 module and a level shifter are required.
-
-Refer to the [Wiring](#wiring) section for details.
-
-Exposed components:
-- ON/OFF Switch
-- Power
-- AC Voltage
-- DC Voltage
-- Temperature
+<p align="center">
+  <img src="images/screen.png" alt="FCHAO Inverter" height="250">
+</p>
 
 To use this integration, add the configuration below to your ESPHome YAML file.
 
@@ -44,7 +37,7 @@ uart:
 
 fchao_inverter:
   - id: inverter1
-    update_interval: 1s
+    update_interval: 1s         # Your choice
     flow_control_pin: GPIO27    # Your choice
 
 sensor:
@@ -120,6 +113,10 @@ The ON/OFF switch requires a circuit with a transistor. However, the user can us
 This project is licensed under the MIT License. This project is provided as-is, with no guarantees of any kind. Use of this repository and its contents is entirely at your own risk.
 
 ## Wiring
+
+The inverter RS485 port consists of a communication part (RS485) and a pulled up dry contact to switch ON/OFF the inverter.
+
+A MAX485 module and a level shifter are required.
 
 Inverter RS485/RJ-45 port pins:
 - 1, 2: GND
