@@ -23,9 +23,9 @@ class FchaoInverterComponent : public PollingComponent, public uart::UARTDevice 
   void set_data_timeout(uint32_t data_timeout_ms) { this->data_timeout_ms_ = data_timeout_ms; }
   void set_send_request(bool send_request) { this->send_request_enabled_ = send_request; }
 
-  void set_voltage_sensor(sensor::Sensor *s) { this->voltage_sensor_ = s; }
+  void set_ac_voltage_sensor(sensor::Sensor *s) { this->ac_voltage_sensor_ = s; }
   void set_power_sensor(sensor::Sensor *s) { this->power_sensor_ = s; }
-  void set_battery_voltage_sensor(sensor::Sensor *s) { this->battery_voltage_sensor_ = s; }
+  void set_dc_voltage_sensor(sensor::Sensor *s) { this->dc_voltage_sensor_ = s; }
   void set_temperature_sensor(sensor::Sensor *s) { this->temperature_sensor_ = s; }
 
  protected:
@@ -44,9 +44,9 @@ class FchaoInverterComponent : public PollingComponent, public uart::UARTDevice 
   uint32_t data_timeout_ms_{5000};
   bool send_request_enabled_{true};
 
-  sensor::Sensor *voltage_sensor_{nullptr};
+  sensor::Sensor *ac_voltage_sensor_{nullptr};
   sensor::Sensor *power_sensor_{nullptr};
-  sensor::Sensor *battery_voltage_sensor_{nullptr};
+  sensor::Sensor *dc_voltage_sensor_{nullptr};
   sensor::Sensor *temperature_sensor_{nullptr};
 
   std::array<uint8_t, FRAME_LEN> rx_buffer_{};

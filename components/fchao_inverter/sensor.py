@@ -19,7 +19,7 @@ DEPENDENCIES = ["fchao_inverter"]
 
 CONF_FCHAO_INVERTER_ID = "fchao_inverter_id"
 CONF_AC_VOLTAGE = "ac_voltage"
-CONF_BATTERY_VOLTAGE = "battery_voltage"
+CONF_DC_VOLTAGE = "dc_voltage"
 
 CONFIG_SCHEMA = cv.Schema(
     {
@@ -36,7 +36,7 @@ CONFIG_SCHEMA = cv.Schema(
             state_class=STATE_CLASS_MEASUREMENT,
             accuracy_decimals=0,
         ),
-        cv.Optional(CONF_BATTERY_VOLTAGE): sensor.sensor_schema(
+        cv.Optional(CONF_DC_VOLTAGE): sensor.sensor_schema(
             unit_of_measurement=UNIT_VOLT,
             device_class=DEVICE_CLASS_VOLTAGE,
             state_class=STATE_CLASS_MEASUREMENT,
@@ -57,15 +57,15 @@ async def to_code(config):
 
     if CONF_AC_VOLTAGE in config:
         sens = await sensor.new_sensor(config[CONF_AC_VOLTAGE])
-        cg.add(hub.set_voltage_sensor(sens))
+        cg.add(hub.set_ac_voltage_sensor(sens))
 
     if CONF_POWER in config:
         sens = await sensor.new_sensor(config[CONF_POWER])
         cg.add(hub.set_power_sensor(sens))
 
-    if CONF_BATTERY_VOLTAGE in config:
-        sens = await sensor.new_sensor(config[CONF_BATTERY_VOLTAGE])
-        cg.add(hub.set_battery_voltage_sensor(sens))
+    if CONF_DC_VOLTAGE in config:
+        sens = await sensor.new_sensor(config[CONF_DC_VOLTAGE])
+        cg.add(hub.set_dc_voltage_sensor(sens))
 
     if CONF_TEMPERATURE in config:
         sens = await sensor.new_sensor(config[CONF_TEMPERATURE])

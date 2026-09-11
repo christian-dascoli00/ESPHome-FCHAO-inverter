@@ -30,9 +30,9 @@ void FchaoInverterComponent::dump_config() {
   ESP_LOGCONFIG(TAG, "  RX Timeout: %u ms", this->rx_timeout_ms_);
   ESP_LOGCONFIG(TAG, "  Data Timeout: %u ms", this->data_timeout_ms_);
   ESP_LOGCONFIG(TAG, "  Send Request: %s", YESNO(this->send_request_enabled_));
-  LOG_SENSOR("  ", "Voltage", this->voltage_sensor_);
+  LOG_SENSOR("  ", "Voltage", this->ac_voltage_sensor_);
   LOG_SENSOR("  ", "Power", this->power_sensor_);
-  LOG_SENSOR("  ", "Battery Voltage", this->battery_voltage_sensor_);
+  LOG_SENSOR("  ", "Battery Voltage", this->dc_voltage_sensor_);
   LOG_SENSOR("  ", "Temperature", this->temperature_sensor_);
 }
 
@@ -110,15 +110,15 @@ void FchaoInverterComponent::on_frame_() {
 
   int volt_ac = bcd2(this->rx_buffer_[4], this->rx_buffer_[5]);
   int power = bcd2(this->rx_buffer_[6], this->rx_buffer_[7]);
-  int volt_batt = bcd2(this->rx_buffer_[8], this->rx_buffer_[9]);
+  int volt_dc = bcd2(this->rx_buffer_[8], this->rx_buffer_[9]);
   int temp = bcd2(this->rx_buffer_[10], this->rx_buffer_[11]);
 
-  if (this->voltage_sensor_ != nullptr)
-    this->voltage_sensor_->publish_state(volt_ac);
+  if (this->ac_voltage_sensor_ != nullptr)
+    this->ac_voltage_sensor_->publish_state(volt_ac);
   if (this->power_sensor_ != nullptr)
     this->power_sensor_->publish_state(power);
-  if (this->battery_voltage_sensor_ != nullptr)
-    this->battery_voltage_sensor_->publish_state(volt_batt / 10.0f);
+  if (this->dc_voltage_sensor_ != nullptr)
+    this->dc_voltage_sensor_->publish_state(volt_dc / 10.0f);
   if (this->temperature_sensor_ != nullptr)
     this->temperature_sensor_->publish_state(temp);
 
@@ -127,12 +127,12 @@ void FchaoInverterComponent::on_frame_() {
 }
 
 void FchaoInverterComponent::publish_nan_() {
-  if (this->voltage_sensor_ != nullptr)
-    this->voltage_sensor_->publish_state(NAN);
+  if (this->ac_voltage_sensor_ != nullptr)
+    this->ac_voltage_sensor_->publish_state(NAN);
   if (this->power_sensor_ != nullptr)
     this->power_sensor_->publish_state(NAN);
-  if (this->battery_voltage_sensor_ != nullptr)
-    this->battery_voltage_sensor_->publish_state(NAN);
+  if (this->dc_voltage_sensor_ != nullptr)
+    this->dc_voltage_sensor_->publish_state(NAN);
   if (this->temperature_sensor_ != nullptr)
     this->temperature_sensor_->publish_state(NAN);
 }

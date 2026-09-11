@@ -4,9 +4,11 @@ ESPHome custom component to monitor and switch ON//OFF a FCHAO inverter via RS48
 
 This component can either replace the native external display or operate in parallel with it on the same RS485 bus. Refer to the `send_request` configuration setting for additional information.
 
-The inverter RS485 port consist of a communication part (RS485) and a pulled up dry contact to switch ON/OFF the inverter.
+The inverter RS485 port consists of a communication part (RS485) and a pulled up dry contact to switch ON/OFF the inverter.
 
 A MAX485 module and a level shifter are required.
+
+Refer to the [Wiring](#wiring) section for details.
 
 Exposed components:
 - ON/OFF Switch
@@ -41,17 +43,13 @@ fchao_inverter:
 sensor:
   - platform: fchao_inverter
     ac_voltage:
-      name: "Inverter Voltage"
-      id: inverter_voltage
+      name: "Inverter AC Voltage"
     power:
       name: "Inverter Power"
-      id: inverter_power
-    battery_voltage:
-      name: "Battery Voltage"
-      id: battery_voltage
+    dc_voltage:
+      name: "Inverter DC Voltage"
     temperature:
       name: "Inverter Temperature"
-      id: inverter_temperature
 
 switch:
   - platform: gpio
@@ -77,7 +75,7 @@ See [`inverter.yaml`](./inverter.yaml) for a complete configuration example.
   - All other options from [Sensor](https://esphome.io/components/sensor/index.html#config-sensor).
 - `power` (Optional): Output power sensor, in Watts.
   - All other options from [Sensor](https://esphome.io/components/sensor/index.html#config-sensor).
-- `battery_voltage` (Optional): DC/battery voltage sensor, in Volts.
+- `dc_voltage` (Optional): DC/battery voltage sensor, in Volts.
   - All other options from [Sensor](https://esphome.io/components/sensor/index.html#config-sensor).
 - `temperature` (Optional): Inverter internal temperature sensor, in °C.
   - All other options from [Sensor](https://esphome.io/components/sensor/index.html#config-sensor).
@@ -139,7 +137,11 @@ Inverter RS485/RJ-45 port pins:
 
 The RS485 A and RS485 B pins should be connect to a MAX485 module converter, and then to level shifter, connected to RX/TX ESP32 pins.
 
-I tested both MAX485 with and without RE/DE pins. In my experience MAX485 with DE/RE pins is in general more reliable, however, the second variant seems to work too. If you use the module variant with DE/RE pins, your should connect together these pins, and connect them through the level shifter to the chosen ESP32 ```inverter_flow_pin```. 
+Both MAX485 variants, with and without RE/DE pins, have been tested and work.
+The variant with DE/RE pins is generally more reliable, though the simpler variant
+(without these pins) also works. If using a module with DE/RE pins, tie these two
+pins together and connect them through the level shifter to the chosen ESP32
+`inverter_flow_pin`.
 
 The level shifter is necessary because MAX485 is 5V rated, while ESP32 is 3.3V rated. If the inverter and the ESP32 has common ground (example: battery supplies power to the inverter and to the ESP32 through a buck converter), the inverter GND communication side connection is not necessary, however the remaining GND connections in the schema below are required.
 
@@ -152,16 +154,18 @@ The level shifter is necessary because MAX485 is 5V rated, while ESP32 is 3.3V r
 │          │                 │          │ <- DE/RE -> │         │ <- flow pin -> │         │
 │          │ <---- GND ----> │          │ <-- GND --> │         │ <-- GND -----> │         │
 └──────────┘        │        └──────────┘      │      └─────────┘      │         └─────────┘
-                    └───────────────────────── └───────────────────────┘
+                    └──────────────────────────┴───────────────────────┘
 ```
 
-My experiments showed that trying to use MAX485 with a 3.3V supply in order to remove the level shifter leads to invalid packets. The MAX3485 variant should be 3.3V rated, however I didn't test it.
+Using a MAX485 module powered at 3.3V to avoid the level shifter has been found to
+cause invalid/corrupted packets. A MAX3485 module, which is rated for 3.3V operation,
+should work without a level shifter, but this has not been verified.
 
 - **Switch ON/OFF control**:
 
 Use a NPN transistor in order to control the pulled up dry contact with an ESP32 GPIO pin.
 
-In the 24V inverter variant the dry contact is pulled up at 24V. Probably the pull up voltage always corresponds to the DC inverter input. Choose a proper transistor, rated for this collector (C) voltage.
+In the 24V inverter variant the dry contact is pulled up at 24V. Probably the pull up voltage always corresponds to the DC inverter input. Choose a proper transistor, rated for this collector (C) voltage. The BC547B has been confirmed to work.
 
 ```
 ┌──────────┐                     ┌─────────┐                         ┌─────────┐ 
