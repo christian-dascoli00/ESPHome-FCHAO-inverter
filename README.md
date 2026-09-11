@@ -1,6 +1,6 @@
 # ESPHome - FCHAO off-grid Inverter
 
-ESPHome custom component to monitor and switch ON//OFF a FCHAO inverter via RS485/RJ-45 port.
+ESPHome integration to monitor and switch ON//OFF a FCHAO inverter via RS485/RJ-45 port.
 
 This component can either replace the native external display or operate in parallel with it on the same RS485 bus. Refer to the `send_request` configuration setting for additional information.
 
@@ -17,6 +17,8 @@ Exposed components:
 - DC Voltage
 - Temperature
 
+To use this integration, add the configuration below to your ESPHome YAML file.
+
 Choose your communication GPIO pins and specify them in the YAML configuration.
 - `tx_pin` under `uart`
 - `rx_pin` under `uart`
@@ -26,19 +28,24 @@ Choose your communication GPIO pins and specify them in the YAML configuration.
 
 If you are using the ON/OFF switch, remember to specify your control `pin` under `switch` as well.
 
-Example:
-
 ```yaml
+external_components:
+  - source:
+      type: git
+      url: https://github.com/christian-dascoli00/ESPHome-FCHAO-inverter.git
+      ref: main
+    components: [fchao_inverter]
+
 uart:
-  tx_pin: GPIO25
-  rx_pin: GPIO26
+  tx_pin: GPIO25    # Your choice
+  rx_pin: GPIO26    # Your choice
   baud_rate: 9600
 
 
 fchao_inverter:
   - id: inverter1
     update_interval: 1s
-    flow_control_pin: GPIO27
+    flow_control_pin: GPIO27    # Your choice
 
 sensor:
   - platform: fchao_inverter
@@ -53,7 +60,7 @@ sensor:
 
 switch:
   - platform: gpio
-    pin: GPIO13
+    pin: GPIO13     # Your choice
     name: "Inverter"
 ```
 
