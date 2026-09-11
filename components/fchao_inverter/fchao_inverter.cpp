@@ -54,7 +54,7 @@ void FchaoInverterComponent::send_request_() {
 }
 
 void FchaoInverterComponent::loop() {
-  const uint32_t now = millis();
+  uint32_t now = millis();
 
   if (this->rx_size_ > 0 && (now - this->last_byte_ms_ > this->rx_timeout_ms_)) {
     ESP_LOGVV(TAG, "Buffer cleared due to timeout (%zu bytes)", this->rx_size_);
@@ -71,6 +71,8 @@ void FchaoInverterComponent::loop() {
     }
   }
 
+  now = millis();
+  
   if (this->last_valid_ms_ != 0 && (now - this->last_valid_ms_ > this->data_timeout_ms_) && !this->timed_out_) {
     ESP_LOGW(TAG, "No valid frame received in %u ms", this->data_timeout_ms_);
     this->publish_nan_();
