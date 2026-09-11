@@ -5,6 +5,7 @@
 #include "esphome/core/hal.h"
 #include "esphome/components/uart/uart.h"
 #include "esphome/components/sensor/sensor.h"
+#include "esphome/components/binary_sensor/binary_sensor.h"
 
 namespace esphome {
 namespace fchao_inverter {
@@ -27,6 +28,7 @@ class FchaoInverterComponent : public PollingComponent, public uart::UARTDevice 
   void set_power_sensor(sensor::Sensor *s) { this->power_sensor_ = s; }
   void set_dc_voltage_sensor(sensor::Sensor *s) { this->dc_voltage_sensor_ = s; }
   void set_temperature_sensor(sensor::Sensor *s) { this->temperature_sensor_ = s; }
+  void set_overload_sensor(binary_sensor::BinarySensor *s) { this->overload_sensor_ = s; }
 
  protected:
   static constexpr size_t FRAME_LEN = 17;
@@ -48,6 +50,7 @@ class FchaoInverterComponent : public PollingComponent, public uart::UARTDevice 
   sensor::Sensor *power_sensor_{nullptr};
   sensor::Sensor *dc_voltage_sensor_{nullptr};
   sensor::Sensor *temperature_sensor_{nullptr};
+  binary_sensor::BinarySensor *overload_sensor_{nullptr};
 
   std::array<uint8_t, FRAME_LEN> rx_buffer_{};
   size_t rx_size_{0};

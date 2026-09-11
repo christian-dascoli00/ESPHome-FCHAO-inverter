@@ -16,6 +16,7 @@ Exposed components:
 - AC Voltage
 - DC Voltage
 - Temperature
+- Overload
 
 Choose your communication GPIO pins and specify them in the YAML configuration.
 - `tx_pin` under `uart`
@@ -51,6 +52,11 @@ sensor:
     temperature:
       name: "Inverter Temperature"
 
+binary_sensor:
+  - platform: fchao_inverter
+    overload:
+      name: "Inverter Overload"
+
 switch:
   - platform: gpio
     pin: GPIO13
@@ -79,6 +85,12 @@ See [`inverter.yaml`](./inverter.yaml) for a complete configuration example.
   - All other options from [Sensor](https://esphome.io/components/sensor/index.html#config-sensor).
 - `temperature` (Optional): Inverter internal temperature sensor, in °C.
   - All other options from [Sensor](https://esphome.io/components/sensor/index.html#config-sensor).
+
+`binary_sensor:`
+- `platform`: `fchao_inverter`
+- `fchao_inverter_id` (Optional, ID): ID of the `fchao_inverter` component to use, if you have multiple instances configured. Defaults to the only configured instance.
+- - `overload` (Optional): Binary sensor that turns `ON` when the inverter reports an overload condition. By the time this triggers, the inverter has already disconnected the output; `OFF` otherwise.
+- All other options from [Binary Sensor](https://esphome.io/components/binary_sensor/index.html#config-binary-sensor).
 
 If you are using the GPIO switch to control the inverter, consider using it to start or stop UART communication too. You can also use it to set sensor values to `NaN` when the switch is turned off. For example:
 

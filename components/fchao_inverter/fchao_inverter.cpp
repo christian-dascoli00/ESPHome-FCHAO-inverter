@@ -34,6 +34,7 @@ void FchaoInverterComponent::dump_config() {
   LOG_SENSOR("  ", "Power", this->power_sensor_);
   LOG_SENSOR("  ", "Battery Voltage", this->dc_voltage_sensor_);
   LOG_SENSOR("  ", "Temperature", this->temperature_sensor_);
+  LOG_BINARY_SENSOR(" ", "Overload", this->overload_sensor_);
 }
 
 void FchaoInverterComponent::update() {
@@ -112,6 +113,7 @@ void FchaoInverterComponent::on_frame_() {
   int power = bcd2(this->rx_buffer_[6], this->rx_buffer_[7]);
   int volt_dc = bcd2(this->rx_buffer_[8], this->rx_buffer_[9]);
   int temp = bcd2(this->rx_buffer_[10], this->rx_buffer_[11]);
+  uint8_t fault = this->rx_buffer_[13];
 
   if (this->ac_voltage_sensor_ != nullptr)
     this->ac_voltage_sensor_->publish_state(volt_ac);
@@ -121,6 +123,8 @@ void FchaoInverterComponent::on_frame_() {
     this->dc_voltage_sensor_->publish_state(volt_dc / 10.0f);
   if (this->temperature_sensor_ != nullptr)
     this->temperature_sensor_->publish_state(temp);
+  if (this->overload_sensor_ != nullptr)
+    this->overload_sensor_->publish_state(fault == 0x04);
 
   this->last_valid_ms_ = millis();
   this->timed_out_ = false;
@@ -135,6 +139,8 @@ void FchaoInverterComponent::publish_nan_() {
     this->dc_voltage_sensor_->publish_state(NAN);
   if (this->temperature_sensor_ != nullptr)
     this->temperature_sensor_->publish_state(NAN);
+  if (this->overload_sensor_ != nullptr)
+    this->overload_sensor_->publish_state(false);
 }
 
 }  // namespace fchao_inverter

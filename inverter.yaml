@@ -55,6 +55,11 @@ sensor:
     temperature:
       name: "Inverter Temperature"
 
+binary_sensor:
+  - platform: fchao_inverter
+    overload:
+      name: "Inverter Overload"
+
 switch:
   - platform: gpio
     pin: GPIO13
