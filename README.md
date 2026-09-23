@@ -1,5 +1,7 @@
 # ESPHome - FCHAO off-grid Inverter
 
+![ESPHome](https://img.shields.io/badge/ESPHome-external--component-blue) ![License](https://img.shields.io/github/license/christian-dascoli00/ESPHome-FCHAO-inverter)
+
 ESPHome integration to monitor and switch ON//OFF a FCHAO inverter via RS485/RJ-45 port.
 
 This component can either replace the native external display or operate in parallel with it on the same RS485 bus. Refer to the `send_request` configuration setting for additional information.
