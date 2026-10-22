@@ -148,7 +148,7 @@ NA: Not used by the integration (probably a power supply for the native external
  └─────────────────┘
 ```
 
-- **Sensor monitor**: 
+### Sensor monitor
 
 The RS485 A and RS485 B pins should be connect to a MAX485 module converter, and then to level shifter, connected to RX/TX ESP32 pins.
 
@@ -176,9 +176,9 @@ Using a MAX485 module powered at 3.3V to avoid the level shifter has been found 
 cause invalid/corrupted packets. A MAX3485 module, which is rated for 3.3V operation,
 should work without a level shifter, but this has not been verified by the author.
 
-<a id="comment"></a>[@subivoodoo](https://github.com/subivoodoo) reported that MAX485 (with `DE / RE`) can be used without a level shifter: `TX` and `contro flow pin` can be driven directly by ESP32 GPIOs, while the `RX` can be connected to the ESP32 through a voltage divider `5V -> 3.3V`, with the MAX485 powered directly from 5 V.
+<a id="comment"></a>[@subivoodoo](https://github.com/subivoodoo) reported that MAX485 (with `DE / RE`) can be used without a level shifter: `TX` and `contro flow pin` can be driven directly by ESP32 GPIOs, while the `RX` can be connected to the ESP32 through a voltage divider `5V -> 3.3V`, with the MAX485 powered directly from 5V.
 
-- **Switch ON/OFF control**:
+### Switch ON/OFF control
 
 Use a NPN transistor in order to control the pulled-up dry contact with an ESP32 GPIO pin. Alternatively, you can simply use a relay that shorts the dry contact to GND tu turn the inverter ON. Both solutions are compatible with the YAML configuration shown above. When using a relay, you may need to set `inverted: true`, depending on how the relay operates.
 
