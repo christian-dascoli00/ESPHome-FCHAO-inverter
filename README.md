@@ -121,7 +121,7 @@ This project is licensed under the MIT License. This project is provided as-is, 
 
 The inverter RS485 port consists of a communication part (RS485) and a pulled up dry contact to switch ON/OFF the inverter.
 
-A MAX485 module and a level shifter are required (level shifter may be avoided, see comment below).
+A MAX485 module and a level shifter are required (level shifter may be avoided, see [comment below](#comment)).
 
 Inverter RS485/RJ-45 port pins:
 | RJ45 pin | function |
@@ -158,7 +158,7 @@ The variant with DE/RE pins is generally more reliable, though the simpler varia
 pins together and connect them through the level shifter to the chosen ESP32
 `inverter_flow_pin`.
 
-The level shifter is necessary (see comment below for a workaround) because MAX485 is 5V rated, while ESP32 is 3.3V rated. If the inverter and the ESP32 has common ground (example: battery supplies power to the inverter and to the ESP32 through a buck converter), the inverter GND communication side connection is not necessary, however the remaining GND connections in the schema below are required.
+The level shifter is necessary (see [comment below](#comment) for a workaround) because MAX485 is 5V rated, while ESP32 is 3.3V rated. If the inverter and the ESP32 has common ground (example: battery supplies power to the inverter and to the ESP32 through a buck converter), the inverter GND communication side connection is not necessary, however the remaining GND connections in the schema below are required.
 
 ```
                                                ^
@@ -176,7 +176,7 @@ Using a MAX485 module powered at 3.3V to avoid the level shifter has been found 
 cause invalid/corrupted packets. A MAX3485 module, which is rated for 3.3V operation,
 should work without a level shifter, but this has not been verified by the author.
 
-[@subivoodoo](https://github.com/subivoodoo) reported that MAX485 (with `DE / RE`) can be used without a level shifter: `TX` and `contro flow pin` can be driven directly by ESP32 GPIOs, while the `RX` can be connected to the ESP32 through a voltage divider `5V -> 3.3V`, with the MAX485 powered directly from 5 V.
+<a id="comment"></a>[@subivoodoo](https://github.com/subivoodoo) reported that MAX485 (with `DE / RE`) can be used without a level shifter: `TX` and `contro flow pin` can be driven directly by ESP32 GPIOs, while the `RX` can be connected to the ESP32 through a voltage divider `5V -> 3.3V`, with the MAX485 powered directly from 5 V.
 
 - **Switch ON/OFF control**:
 
