@@ -2,7 +2,7 @@
 
 ![ESPHome](https://img.shields.io/badge/ESPHome-external--component-blue) ![License](https://img.shields.io/github/license/christian-dascoli00/ESPHome-FCHAO-inverter)
 
-ESPHome integration to monitor and switch ON//OFF a FCHAO inverter via RS485/RJ-45 port.
+ESPHome integration to monitor and turn ON//OFF a FCHAO inverter via RS485/RJ-45 port.
 
 This component can either replace the native external display or operate in parallel with it on the same RS485 bus. Refer to the `send_request` configuration setting for additional information.
 
@@ -106,11 +106,14 @@ switch:
           id(inverter1).publish_nan();
 ```
 
-Tested on the 3000W 24V off-grid FCHAO model.
+Tested on:
+
+- 3000W 24V model (by the author)
+- 2500W 24V model (by [@subivoodoo](https://github.com/subivoodoo))
 
 This integration emulates the request made by the external display, which always sends the same packet. The request packet could vary depending on the inverter variant.
 
-The ON/OFF switch requires a circuit with a transistor. However, the user can use the integration ignoring the switch, switching manually ON/OFF via the hardware button in the inverter case.
+The ON/OFF switch requires a circuit with a transistor or a relay. However, the user can use the integration ignoring the switch, switching manually ON/OFF via the hardware button in the inverter case.
 
 This project is licensed under the MIT License. This project is provided as-is, with no guarantees of any kind. Use of this repository and its contents is entirely at your own risk.
 
@@ -118,15 +121,21 @@ This project is licensed under the MIT License. This project is provided as-is, 
 
 The inverter RS485 port consists of a communication part (RS485) and a pulled up dry contact to switch ON/OFF the inverter.
 
-A MAX485 module and a level shifter are required.
+A MAX485 module and a level shifter are required (level shifter may be avoided, see comment below).
 
 Inverter RS485/RJ-45 port pins:
-- 1, 2: GND
-- 3, 5: dry contact - switch ON/OFF - (pull up 24V in 24V variant)
-- 4, 6: not used by the integration (probably a power supply for the native external display)
-- 7: RS485 A
-- 8: RS485 B
+| RJ45 pin | function |
+|----------|-----------|
+| 1 | GND | 
+| 2 | GND | 
+| 3 | Dry contact - ON/OFF | 
+| 4 | NA | 
+| 5 | Dry contact - ON/OFF | 
+| 6 | NA |
+| 7 | RS485 A | 
+| 8 | RS485 B | 
 
+NA: Not used by the integration (probably a power supply for the native external display)
 
 ```
     Inverter port
@@ -149,7 +158,7 @@ The variant with DE/RE pins is generally more reliable, though the simpler varia
 pins together and connect them through the level shifter to the chosen ESP32
 `inverter_flow_pin`.
 
-The level shifter is necessary because MAX485 is 5V rated, while ESP32 is 3.3V rated. If the inverter and the ESP32 has common ground (example: battery supplies power to the inverter and to the ESP32 through a buck converter), the inverter GND communication side connection is not necessary, however the remaining GND connections in the schema below are required.
+The level shifter is necessary (see comment below for a workaround) because MAX485 is 5V rated, while ESP32 is 3.3V rated. If the inverter and the ESP32 has common ground (example: battery supplies power to the inverter and to the ESP32 through a buck converter), the inverter GND communication side connection is not necessary, however the remaining GND connections in the schema below are required.
 
 ```
                                                ^
@@ -165,11 +174,15 @@ The level shifter is necessary because MAX485 is 5V rated, while ESP32 is 3.3V r
 
 Using a MAX485 module powered at 3.3V to avoid the level shifter has been found to
 cause invalid/corrupted packets. A MAX3485 module, which is rated for 3.3V operation,
-should work without a level shifter, but this has not been verified.
+should work without a level shifter, but this has not been verified by the author.
+
+[@subivoodoo](https://github.com/subivoodoo) reported that MAX485 (with `DE / RE`) can be used without a level shifter: `TX` and `contro flow pin` can be driven directly by ESP32 GPIOs, while the `RX` can be connected to the ESP32 through a voltage divider `5V -> 3.3V`, with the MAX485 powered directly from 5 V.
 
 - **Switch ON/OFF control**:
 
-Use a NPN transistor in order to control the pulled up dry contact with an ESP32 GPIO pin.
+Use a NPN transistor in order to control the pulled-up dry contact with an ESP32 GPIO pin. Alternatively, you can simply use a relay that shorts the dry contact to GND tu turn the inverter ON. Both solutions are compatible with the YAML configuration shown above. When using a relay, you may need to set `inverted: true`, depending on how the relay operates.
+
+The transistor-based wiring is illustrated below.
 
 In the 24V inverter variant the dry contact is pulled up at 24V. Probably the pull up voltage always corresponds to the DC inverter input. Choose a proper transistor, rated for this collector (C) voltage. The BC547B has been confirmed to work.
 
