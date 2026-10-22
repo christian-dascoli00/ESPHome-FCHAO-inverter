@@ -64,7 +64,7 @@ See [`inverter.yaml`](./inverter.yaml) for a complete configuration example.
 `fchao_inverter:`
 - `id` (Required, ID): ID used to reference this component.
 - `uart_id` (Optional, ID): ID of the `uart` bus this component is attached to. Only needed if you have multiple UART buses configured.
-- `update_interval` (Optional, Time): Interval between status requests sent to the inverter. Defaults to `5s`. In practice, this controls how often sensor values are updated when `send_request` is enabled (`true`). It has no effect on the passive listening done in `loop()`.
+- `update_interval` (Optional, Time): Interval between status requests sent to the inverter. Defaults to `5s`. In practice, this controls how often sensor values are updated when `send_request` is enabled (`true`).
 - `flow_control_pin` (Optional, Pin): GPIO pin connected to the DE/RE pins of the MAX485 module (tied together), used to switch the transceiver between transmit and receive mode. Not needed if your MAX485 module handles flow control automatically (no DE/RE pins exposed).
 - `rx_timeout` (Optional, Time): Maximum time allowed between two consecutive bytes of an incoming frame before the partially received buffer is discarded. Defaults to `200ms`.
 - `data_timeout` (Optional, Time): Maximum time allowed without receiving a valid, complete frame before all sensors are published as `NaN`. Defaults to `5s`.
@@ -179,6 +179,8 @@ should work without a level shifter, but this has not been verified by the autho
 <a id="comment"></a>[@subivoodoo](https://github.com/subivoodoo) reported that MAX485 (with `DE / RE`) can be used without a level shifter: `TX` and `contro flow pin` can be driven directly by ESP32 GPIOs, while the `RX` can be connected to the ESP32 through a voltage divider `5V -> 3.3V`, with the MAX485 powered directly from 5V.
 
 ### Switch ON/OFF control
+
+The inverter can be switched ON/OFF manually using the physical button on its case / native display, or controlled through ESPHome by following the instructions in this section.
 
 Use a NPN transistor in order to control the pulled-up dry contact with an ESP32 GPIO pin. Alternatively, you can simply use a relay that shorts the dry contact to GND tu turn the inverter ON. Both solutions are compatible with the YAML configuration shown above. When using a relay, you may need to set `inverted: true`, depending on how the relay operates.
 
